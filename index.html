@@ -126,162 +126,34 @@ section{position:relative;z-index:2;}
 .btn-replay{margin-top:1rem;padding:.85rem 2.5rem;border:1px solid rgba(200,169,110,.45);background:transparent;color:var(--gold);border-radius:50px;font-family:'Jost',sans-serif;font-weight:200;font-size:.82rem;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
 .btn-replay:hover{background:rgba(200,169,110,.1);transform:translateY(-2px);}
 
-/* ═══════════ QUEBRA-CABEÇA SEÇÃO ═══════════ */
-#puzzle-section{
-  min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:4rem 1rem 5rem;
-  text-align:center;
-  background:radial-gradient(ellipse at 50% 50%,rgba(100,30,50,.3),transparent 70%);
-  position:relative;overflow:hidden;
-}
-#puzzle-section::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 20% 80%,rgba(180,70,100,.08) 0%,transparent 40%),
-    radial-gradient(circle at 80% 20%,rgba(200,169,110,.06) 0%,transparent 40%);
-  pointer-events:none;
-}
+/* QUEBRA-CABEÇA */
+#puzzle-section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 1rem 5rem;text-align:center;background:radial-gradient(ellipse at 50% 50%,rgba(100,30,50,.3),transparent 70%);position:relative;overflow:hidden;}
+#puzzle-section::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,rgba(180,70,100,.08) 0%,transparent 40%),radial-gradient(circle at 80% 20%,rgba(200,169,110,.06) 0%,transparent 40%);pointer-events:none;}
 .puzzle-title-area{margin-bottom:2.5rem;position:relative;z-index:3;}
 .puzzle-title-area .sec-label{margin-bottom:.8rem;}
-.puzzle-title-area h2{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2rem,6vw,3.5rem);
-  font-style:italic;font-weight:300;
-  color:var(--cream);margin-bottom:.5rem;
-}
-.puzzle-title-area p{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(.9rem,2vw,1.1rem);color:rgba(200,169,110,.7);
-}
-
-/* Container do puzzle */
-#puzzle-container{
-  position:relative;
-  z-index:3;
-}
-
-/* Board onde as peças pousam */
-#puzzle-board{
-  position:relative;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:
-    0 0 0 1px rgba(200,169,110,.2),
-    0 30px 80px rgba(0,0,0,.7),
-    inset 0 0 60px rgba(120,40,60,.15);
-  background:rgba(10,5,7,.9);
-}
-
-/* Sombra de cada célula no board */
-.board-cell{
-  position:absolute;
-  border-radius:3px;
-  background:rgba(180,90,120,.04);
-  border:1px solid rgba(200,169,110,.06);
-  transition:background .3s;
-}
-.board-cell.filled{
-  background:transparent;
-  border-color:transparent;
-}
-
-/* Peça do quebra-cabeça */
-.puzzle-piece{
-  position:absolute;
-  cursor:grab;
-  filter:drop-shadow(0 4px 12px rgba(0,0,0,.6));
-  transition:filter .2s;
-  transform-origin:center center;
-  user-select:none;
-  -webkit-user-select:none;
-  touch-action:none;
-  z-index:10;
-}
-.puzzle-piece:hover{
-  filter:drop-shadow(0 8px 24px rgba(200,120,130,.5)) brightness(1.08);
-  z-index:20;
-}
-.puzzle-piece.dragging{
-  cursor:grabbing;
-  filter:drop-shadow(0 16px 40px rgba(200,120,130,.7)) brightness(1.12);
-  z-index:100;
-}
-.puzzle-piece.snapped{
-  cursor:default;
-  pointer-events:none;
-  filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));
-}
+.puzzle-title-area h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,3.5rem);font-style:italic;font-weight:300;color:var(--cream);margin-bottom:.5rem;}
+.puzzle-title-area p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.9rem,2vw,1.1rem);color:rgba(200,169,110,.7);}
+#puzzle-container{position:relative;z-index:3;}
+#puzzle-board{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(200,169,110,.2),0 30px 80px rgba(0,0,0,.7),inset 0 0 60px rgba(120,40,60,.15);background:rgba(10,5,7,.9);}
+.board-cell{position:absolute;border-radius:3px;background:rgba(180,90,120,.04);border:1px solid rgba(200,169,110,.06);transition:background .3s;}
+.board-cell.filled{background:transparent;border-color:transparent;}
+.puzzle-piece{position:absolute;cursor:grab;filter:drop-shadow(0 4px 12px rgba(0,0,0,.6));transition:filter .2s;transform-origin:center center;user-select:none;-webkit-user-select:none;touch-action:none;z-index:10;}
+.puzzle-piece:hover{filter:drop-shadow(0 8px 24px rgba(200,120,130,.5)) brightness(1.08);z-index:20;}
+.puzzle-piece.dragging{cursor:grabbing;filter:drop-shadow(0 16px 40px rgba(200,120,130,.7)) brightness(1.12);z-index:100;}
+.puzzle-piece.snapped{cursor:default;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));}
 .puzzle-piece canvas{display:block;}
-
-/* Área dispersa ao redor do board */
-#scatter-area{
-  position:absolute;
-  inset:-220px;
-  pointer-events:none;
-  z-index:2;
-}
-
-/* Controles */
-.puzzle-controls{
-  margin-top:2rem;position:relative;z-index:5;
-  display:flex;gap:1rem;align-items:center;justify-content:center;flex-wrap:wrap;
-}
-.puzzle-btn{
-  padding:.7rem 2rem;
-  border:1px solid rgba(200,169,110,.4);
-  background:rgba(200,169,110,.06);
-  color:var(--gold);
-  border-radius:50px;
-  font-family:'Jost',sans-serif;font-weight:200;
-  font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;
-  cursor:pointer;transition:all .3s;
-}
+#scatter-area{position:absolute;inset:-220px;pointer-events:none;z-index:2;}
+.puzzle-controls{margin-top:2rem;position:relative;z-index:5;display:flex;gap:1rem;align-items:center;justify-content:center;flex-wrap:wrap;}
+.puzzle-btn{padding:.7rem 2rem;border:1px solid rgba(200,169,110,.4);background:rgba(200,169,110,.06);color:var(--gold);border-radius:50px;font-family:'Jost',sans-serif;font-weight:200;font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
 .puzzle-btn:hover{background:rgba(200,169,110,.14);transform:translateY(-2px);}
-.puzzle-btn.primary{
-  background:rgba(180,70,100,.2);
-  border-color:rgba(200,100,130,.5);
-  color:var(--rose-soft);
-}
+.puzzle-btn.primary{background:rgba(180,70,100,.2);border-color:rgba(200,100,130,.5);color:var(--rose-soft);}
 .puzzle-btn.primary:hover{background:rgba(180,70,100,.35);}
-
-.puzzle-status{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(.85rem,2vw,1rem);
-  color:rgba(200,169,110,.65);
-  margin-top:1.2rem;position:relative;z-index:5;
-  min-height:1.4em;letter-spacing:.05em;
-  transition:color .6s;
-}
+.puzzle-status{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.85rem,2vw,1rem);color:rgba(200,169,110,.65);margin-top:1.2rem;position:relative;z-index:5;min-height:1.4em;letter-spacing:.05em;transition:color .6s;}
 .puzzle-status.complete{color:#f4b8c8;font-size:1.1rem;}
-
-/* Progress bar */
-.puzzle-progress-wrap{
-  width:min(380px,80vw);margin:1rem auto 0;
-  position:relative;z-index:5;
-}
-.puzzle-progress-bar{
-  width:100%;height:2px;
-  background:rgba(200,169,110,.12);
-  border-radius:2px;overflow:hidden;
-}
-.puzzle-progress-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--wine-soft),var(--gold));
-  border-radius:2px;
-  transition:width .4s ease;
-  box-shadow:0 0 8px rgba(200,169,110,.4);
-}
-
-/* Parabéns overlay */
-#puzzle-complete-msg{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:rgba(10,5,7,.7);backdrop-filter:blur(8px);
-  border-radius:16px;z-index:50;
-  opacity:0;pointer-events:none;
-  transition:opacity .8s ease;
-}
+.puzzle-progress-wrap{width:min(380px,80vw);margin:1rem auto 0;position:relative;z-index:5;}
+.puzzle-progress-bar{width:100%;height:2px;background:rgba(200,169,110,.12);border-radius:2px;overflow:hidden;}
+.puzzle-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--wine-soft),var(--gold));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(200,169,110,.4);}
+#puzzle-complete-msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,5,7,.7);backdrop-filter:blur(8px);border-radius:16px;z-index:50;opacity:0;pointer-events:none;transition:opacity .8s ease;}
 #puzzle-complete-msg.show{opacity:1;pointer-events:auto;}
 .complete-inner{text-align:center;}
 .complete-heart{font-size:4rem;animation:beatH 1s ease-in-out infinite;display:block;margin-bottom:1rem;}
@@ -473,16 +345,13 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
   </div>
 </section>
 
-<!-- ═══════════ QUEBRA-CABEÇA REAL ═══════════ -->
 <section id="puzzle-section">
   <div class="puzzle-title-area reveal">
     <span class="sec-label">nossas memórias</span>
     <h2>Monte nosso coração 💗</h2>
     <p>Arraste as peças e complete nosso retrato</p>
   </div>
-
   <div id="puzzle-container">
-    <!-- O board fica no centro; as peças ficam ao redor -->
     <div id="puzzle-board"></div>
     <div id="puzzle-complete-msg">
       <div class="complete-inner">
@@ -492,26 +361,22 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
       </div>
     </div>
   </div>
-
   <div class="puzzle-controls">
     <button class="puzzle-btn primary" id="btnSolve" onclick="autoSolvePuzzle()">✦ montar automaticamente</button>
     <button class="puzzle-btn" onclick="resetPuzzle()">↺ embaralhar de novo</button>
   </div>
-
   <div class="puzzle-status" id="puzzleStatus">✦ arraste as peças para o coração ✦</div>
   <div class="puzzle-progress-wrap">
     <div class="puzzle-progress-bar"><div class="puzzle-progress-fill" id="puzzleProgressFill"></div></div>
   </div>
 </section>
 
-<!-- GALLERY -->
 <section id="gallery-section">
   <span class="sec-label reveal" style="text-align:center;display:block;">as nossas memórias</span>
   <div class="sec-title reveal" style="text-align:center;">Momentos nossos 🌸</div>
   <div class="gallery-grid" id="galleryGrid"></div>
 </section>
 
-<!-- LETTER -->
 <section id="letter-section">
   <span class="sec-label reveal">uma mensagem especial</span>
   <div class="sec-title reveal">Minha carta para você</div>
@@ -585,7 +450,7 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
   </div>
 </div>
 
-<!-- VIDEO -->
+<!-- VIDEO — link atualizado -->
 <section id="video-section" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem;text-align:center;background:radial-gradient(ellipse at 50% 50%,rgba(80,20,35,.3),transparent 65%);">
   <span class="sec-label reveal" style="display:block;text-align:center;">nossos momentos</span>
   <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.8rem,5vw,3rem);color:var(--cream);margin-bottom:2.5rem;" class="reveal">
@@ -594,7 +459,7 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
   <div class="reveal" style="width:100%;max-width:680px;position:relative;">
     <div id="videoFrame" style="border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(200,169,110,.25);position:relative;">
       <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(120,40,60,.08),transparent);pointer-events:none;z-index:1;border-radius:16px;"></div>
-      <iframe src="https://drive.google.com/file/d/1KWfCwq4BdFTUrFrBlmH66vyC9sPPJNb4/preview" width="100%" height="420" frameborder="0" allow="autoplay" allowfullscreen style="display:block;"></iframe>
+      <iframe src="https://drive.google.com/file/d/14_8d8HCgcHUoZeuif8FUXRZSaEcX7Nmh/preview" width="100%" height="420" frameborder="0" allow="autoplay" allowfullscreen style="display:block;"></iframe>
     </div>
     <div style="margin-top:1.2rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.85rem;color:rgba(200,169,110,.45);">✦ nossos momentos especiais ✦</div>
   </div>
@@ -629,9 +494,6 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
 <audio id="bgMusic" loop><source src="amor.mp3" type="audio/mpeg"></audio>
 
 <script>
-/* ══════════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════════ */
 const CFG = {
   videoUrl: "https://www.youtube.com/watch?v=SUA_URL_AQUI",
   senha:    "14022026",
@@ -645,9 +507,6 @@ const PHOTO3 = "WhatsApp Image 2026-05-26 at 13.03.08 (2).jpeg";
 const PHOTO4 = "WhatsApp Image 2026-05-26 at 13.03.09 (1).jpeg";
 const PHOTO5 = "WhatsApp Image 2026-05-26 at 13.03.09 (2).jpeg";
 
-/* ══════════════════════════════════════════════
-   INTRO
-══════════════════════════════════════════════ */
 window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("intro").classList.add("out");
@@ -663,9 +522,6 @@ function revealHero(){
   setTimeout(()=>vis("hScroll"),2100);
 }
 
-/* ══════════════════════════════════════════════
-   RAIN HEARTS
-══════════════════════════════════════════════ */
 function initRainHearts(){
   const c=document.getElementById("heroRain");
   const icons=["","🌷","🌷","🌷","🌷","🌷"];
@@ -681,9 +537,6 @@ function initRainHearts(){
   },900);
 }
 
-/* ══════════════════════════════════════════════
-   PETALS
-══════════════════════════════════════════════ */
 (function(){
   const cv=document.getElementById("petal-canvas");const ctx=cv.getContext("2d");
   function sz(){cv.width=innerWidth;cv.height=innerHeight;}sz();addEventListener("resize",sz);
@@ -696,9 +549,6 @@ function initRainHearts(){
   (function loop(){ctx.clearRect(0,0,cv.width,cv.height);petals.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);})();
 })();
 
-/* ══════════════════════════════════════════════
-   PARTICLES
-══════════════════════════════════════════════ */
 (function(){
   const cv=document.createElement("canvas");cv.style.cssText="position:fixed;inset:0;z-index:0;pointer-events:none;";document.body.insertBefore(cv,document.body.firstChild);
   const ctx=cv.getContext("2d");let W,H,pts=[];
@@ -712,9 +562,6 @@ function initRainHearts(){
   (function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.tick();p.draw();});requestAnimationFrame(loop);})();
 })();
 
-/* ══════════════════════════════════════════════
-   TREE
-══════════════════════════════════════════════ */
 (function(){
   const cv=document.getElementById("tree-canvas");const ctx=cv.getContext("2d");let W,H;
   const floatWords=["eu te amo","para sempre","meu amor","❤","te amo","♥","amor","always"];
@@ -735,17 +582,11 @@ function initRainHearts(){
   let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{resize();buildSnapshot();},300);});
 })();
 
-/* ══════════════════════════════════════════════
-   SCROLL REVEAL
-══════════════════════════════════════════════ */
 const ioRev=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("vis");});},{threshold:.15});
 document.querySelectorAll(".reveal").forEach(el=>ioRev.observe(el));
 const ioMot=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){document.getElementById("motivoTitle").classList.add("vis");document.querySelectorAll(".motivo-card").forEach((c,i)=>{setTimeout(()=>c.classList.add("vis"),i*110);});ioMot.disconnect();}});},{threshold:.12});
 ioMot.observe(document.getElementById("motivo"));
 
-/* ══════════════════════════════════════════════
-   GALLERY
-══════════════════════════════════════════════ */
 const PHOTOS=[
   {src:PHOTO0,cap:"juntos"},
   {src:PHOTO1,cap:"nosso lugar"},
@@ -767,13 +608,8 @@ PHOTOS.forEach((ph,i)=>{
 const ioPol2=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add("vis"),i*120);});},{threshold:.05});
 document.querySelectorAll(".polaroid").forEach(p=>ioPol2.observe(p));
 
-/* ══════════════════════════════════════════════
-   QUEBRA-CABEÇA REAL COM ENCAIXES
-══════════════════════════════════════════════ */
 (function(){
-
-// Forma do coração em grid 6x6
-const HEART_GRID = [
+const HEART_GRID=[
   [0,1,1,0,1,1,0],
   [1,1,1,1,1,1,1],
   [1,1,1,1,1,1,1],
@@ -781,461 +617,182 @@ const HEART_GRID = [
   [0,0,1,1,1,0,0],
   [0,0,0,1,0,0,0],
 ];
-const ROWS = HEART_GRID.length;
-const COLS = HEART_GRID[0].length;
-
-// Tamanho de cada célula base
-const isMobile = window.innerWidth < 600;
-const CELL = isMobile ? Math.floor((window.innerWidth * 0.78) / COLS) : Math.min(72, Math.floor((window.innerWidth * 0.55) / COLS));
-const W = COLS * CELL;
-const H = ROWS * CELL;
-
-// Tamanho do tab (encaixe) — 28% do cell
-const TAB = Math.round(CELL * 0.28);
-
-// Board
-const board = document.getElementById("puzzle-board");
-board.style.width = W + "px";
-board.style.height = H + "px";
-board.style.position = "relative";
-
-// Container do puzzle (para posicionar peças ao redor)
-const container = document.getElementById("puzzle-container");
-const PAD = isMobile ? 180 : 240; // padding ao redor do board para as peças
-container.style.position = "relative";
-container.style.width = (W + PAD*2) + "px";
-container.style.maxWidth = "100%";
-container.style.height = (H + PAD*2) + "px";
-container.style.margin = "0 auto";
-container.style.overflow = "visible";
-
-// Reposicionar board dentro do container
-board.style.position = "absolute";
-board.style.left = PAD + "px";
-board.style.top = PAD + "px";
-board.style.zIndex = "4";
-
-// Células ghost no board
-const heartCells = [];
+const ROWS=HEART_GRID.length;const COLS=HEART_GRID[0].length;
+const isMobile=window.innerWidth<600;
+const CELL=isMobile?Math.floor((window.innerWidth*.78)/COLS):Math.min(72,Math.floor((window.innerWidth*.55)/COLS));
+const W=COLS*CELL;const H=ROWS*CELL;
+const TAB=Math.round(CELL*.28);
+const board=document.getElementById("puzzle-board");
+board.style.width=W+"px";board.style.height=H+"px";board.style.position="relative";
+const container=document.getElementById("puzzle-container");
+const PAD=isMobile?180:240;
+container.style.position="relative";
+container.style.width=(W+PAD*2)+"px";
+container.style.maxWidth="100%";
+container.style.height=(H+PAD*2)+"px";
+container.style.margin="0 auto";
+container.style.overflow="visible";
+board.style.position="absolute";
+board.style.left=PAD+"px";
+board.style.top=PAD+"px";
+board.style.zIndex="4";
+const heartCells=[];
 for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) if(HEART_GRID[r][c]){
   heartCells.push([r,c]);
-  const ghost = document.createElement("div");
-  ghost.className = "board-cell";
-  ghost.id = `cell-${r}-${c}`;
-  ghost.style.cssText = `left:${c*CELL}px;top:${r*CELL}px;width:${CELL}px;height:${CELL}px;`;
+  const ghost=document.createElement("div");
+  ghost.className="board-cell";ghost.id=`cell-${r}-${c}`;
+  ghost.style.cssText=`left:${c*CELL}px;top:${r*CELL}px;width:${CELL}px;height:${CELL}px;`;
   board.appendChild(ghost);
 }
-
-// Imagem da foto
-const img = new Image();
-img.crossOrigin = "anonymous";
-img.src = PHOTO3;
-
-let pieces = [];
-let snappedCount = 0;
-let puzzleReady = false;
-let autoSolving = false;
-
-img.onload = function(){ buildPieces(); }
-img.onerror = function(){ buildPieces(); } // funciona sem foto também
-
-// ── Desenhar forma de peça com encaixes ──────────────────────────
-// tabs: {top, right, bottom, left} cada um: 1=saliência, -1=reentrância, 0=plano
-function drawPieceShape(ctx, w, h, tabs, tab, fill, stroke, imgData){
-  const {top,right,bottom,left} = tabs;
-  const r = 4; // arredondamento de quinas
-
-  ctx.save();
-  ctx.beginPath();
-
-  // Topo
-  ctx.moveTo(r, 0);
-  if(top !== 0){
-    const mx = w/2, dir = top;
-    ctx.lineTo(mx - tab*0.55, 0);
-    ctx.bezierCurveTo(
-      mx - tab*0.55, dir*(-tab*0.8),
-      mx + tab*0.55, dir*(-tab*0.8),
-      mx + tab*0.55, 0
-    );
-  }
-  ctx.lineTo(w - r, 0);
-  ctx.quadraticCurveTo(w, 0, w, r);
-
-  // Direita
-  if(right !== 0){
-    const my = h/2, dir = right;
-    ctx.lineTo(w, my - tab*0.55);
-    ctx.bezierCurveTo(
-      w + dir*tab*0.8, my - tab*0.55,
-      w + dir*tab*0.8, my + tab*0.55,
-      w, my + tab*0.55
-    );
-  }
-  ctx.lineTo(w, h - r);
-  ctx.quadraticCurveTo(w, h, w - r, h);
-
-  // Base
-  if(bottom !== 0){
-    const mx = w/2, dir = bottom;
-    ctx.lineTo(mx + tab*0.55, h);
-    ctx.bezierCurveTo(
-      mx + tab*0.55, h + dir*tab*0.8,
-      mx - tab*0.55, h + dir*tab*0.8,
-      mx - tab*0.55, h
-    );
-  }
-  ctx.lineTo(r, h);
-  ctx.quadraticCurveTo(0, h, 0, h - r);
-
-  // Esquerda
-  if(left !== 0){
-    const my = h/2, dir = left;
-    ctx.lineTo(0, my + tab*0.55);
-    ctx.bezierCurveTo(
-      dir*(-tab*0.8), my + tab*0.55,
-      dir*(-tab*0.8), my - tab*0.55,
-      0, my - tab*0.55
-    );
-  }
-  ctx.lineTo(0, r);
-  ctx.quadraticCurveTo(0, 0, r, 0);
-
-  ctx.closePath();
-
-  if(imgData){
-    ctx.save();
-    ctx.clip();
-    ctx.drawImage(imgData.img, imgData.sx, imgData.sy, imgData.sw, imgData.sh, 0, 0, w, h);
-    ctx.restore();
-  } else {
-    ctx.fillStyle = fill;
-    ctx.fill();
-  }
-
-  ctx.strokeStyle = stroke;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.restore();
+const img=new Image();img.crossOrigin="anonymous";img.src=PHOTO3;
+let pieces=[],snappedCount=0,puzzleReady=false,autoSolving=false;
+img.onload=function(){buildPieces();}
+img.onerror=function(){buildPieces();}
+function drawPieceShape(ctx,w,h,tabs,tab,fill,stroke,imgData){
+  const{top,right,bottom,left}=tabs;const r=4;
+  ctx.save();ctx.beginPath();
+  ctx.moveTo(r,0);
+  if(top!==0){const mx=w/2,dir=top;ctx.lineTo(mx-tab*.55,0);ctx.bezierCurveTo(mx-tab*.55,dir*(-tab*.8),mx+tab*.55,dir*(-tab*.8),mx+tab*.55,0);}
+  ctx.lineTo(w-r,0);ctx.quadraticCurveTo(w,0,w,r);
+  if(right!==0){const my=h/2,dir=right;ctx.lineTo(w,my-tab*.55);ctx.bezierCurveTo(w+dir*tab*.8,my-tab*.55,w+dir*tab*.8,my+tab*.55,w,my+tab*.55);}
+  ctx.lineTo(w,h-r);ctx.quadraticCurveTo(w,h,w-r,h);
+  if(bottom!==0){const mx=w/2,dir=bottom;ctx.lineTo(mx+tab*.55,h);ctx.bezierCurveTo(mx+tab*.55,h+dir*tab*.8,mx-tab*.55,h+dir*tab*.8,mx-tab*.55,h);}
+  ctx.lineTo(r,h);ctx.quadraticCurveTo(0,h,0,h-r);
+  if(left!==0){const my=h/2,dir=left;ctx.lineTo(0,my+tab*.55);ctx.bezierCurveTo(dir*(-tab*.8),my+tab*.55,dir*(-tab*.8),my-tab*.55,0,my-tab*.55);}
+  ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();
+  if(imgData){ctx.save();ctx.clip();ctx.drawImage(imgData.img,imgData.sx,imgData.sy,imgData.sw,imgData.sh,0,0,w,h);ctx.restore();}
+  else{ctx.fillStyle=fill;ctx.fill();}
+  ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
 }
-
-// ── Construir tabs aleatórios mas compatíveis ─────────────────────
 function buildPieces(){
-  // Gerar tabs: h_tabs[r][c] = tab entre (r,c) e (r,c+1) direita/esquerda
-  //             v_tabs[r][c] = tab entre (r,c) e (r+1,c) baixo/cima
-  const h_tabs = Array.from({length:ROWS}, ()=>Array(COLS+1).fill(0));
-  const v_tabs = Array.from({length:ROWS+1}, ()=>Array(COLS).fill(0));
-
-  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS-1;c++){
-    if(HEART_GRID[r]?.[c] && HEART_GRID[r]?.[c+1])
-      h_tabs[r][c+1] = Math.random()>.5 ? 1 : -1;
-  }
-  for(let r=0;r<ROWS-1;r++) for(let c=0;c<COLS;c++){
-    if(HEART_GRID[r]?.[c] && HEART_GRID[r+1]?.[c])
-      v_tabs[r+1][c] = Math.random()>.5 ? 1 : -1;
-  }
-
-  pieces = [];
-  heartCells.forEach(([r,c]) => {
-    // tabs desta peça: top=v_tabs[r][c], bottom=v_tabs[r+1][c], left=h_tabs[r][c], right=h_tabs[r][c+1]
-    const topTab    = -v_tabs[r][c];   // invertido: saliência de cima = reentrância desta
-    const bottomTab =  v_tabs[r+1][c];
-    const leftTab   = -h_tabs[r][c];
-    const rightTab  =  h_tabs[r][c+1];
-
-    const tabs = { top:topTab, right:rightTab, bottom:bottomTab, left:leftTab };
-
-    // Canvas extra para acomodar tabs que saem para fora
-    const extra = TAB + 4;
-    const pw = CELL + extra*2;
-    const ph = CELL + extra*2;
-
-    const cv = document.createElement("canvas");
-    cv.width = pw; cv.height = ph;
-    const pctx = cv.getContext("2d");
-
-    // Sombra
-    pctx.save();
-    pctx.shadowColor = "rgba(0,0,0,0.5)";
-    pctx.shadowBlur = 10;
-    pctx.shadowOffsetY = 4;
-
-    // Offset da peça no canvas extra
-    pctx.translate(extra, extra);
-
-    const imgData = img.naturalWidth ? {
-      img: img,
-      sx: (c / COLS) * img.naturalWidth,
-      sy: (r / ROWS) * img.naturalHeight,
-      sw: img.naturalWidth / COLS,
-      sh: img.naturalHeight / ROWS,
-    } : null;
-
-    drawPieceShape(pctx, CELL, CELL, tabs,
-      TAB,
-      imgData ? null : `hsl(${(r*COLS+c)*22+320},55%,${45+r*5}%)`,
-      "rgba(255,255,255,0.35)",
-      imgData
-    );
+  const h_tabs=Array.from({length:ROWS},()=>Array(COLS+1).fill(0));
+  const v_tabs=Array.from({length:ROWS+1},()=>Array(COLS).fill(0));
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS-1;c++){if(HEART_GRID[r]?.[c]&&HEART_GRID[r]?.[c+1])h_tabs[r][c+1]=Math.random()>.5?1:-1;}
+  for(let r=0;r<ROWS-1;r++) for(let c=0;c<COLS;c++){if(HEART_GRID[r]?.[c]&&HEART_GRID[r+1]?.[c])v_tabs[r+1][c]=Math.random()>.5?1:-1;}
+  pieces=[];
+  heartCells.forEach(([r,c])=>{
+    const topTab=-v_tabs[r][c],bottomTab=v_tabs[r+1][c],leftTab=-h_tabs[r][c],rightTab=h_tabs[r][c+1];
+    const tabs={top:topTab,right:rightTab,bottom:bottomTab,left:leftTab};
+    const extra=TAB+4;const pw=CELL+extra*2;const ph=CELL+extra*2;
+    const cv=document.createElement("canvas");cv.width=pw;cv.height=ph;
+    const pctx=cv.getContext("2d");
+    pctx.save();pctx.shadowColor="rgba(0,0,0,0.5)";pctx.shadowBlur=10;pctx.shadowOffsetY=4;
+    pctx.translate(extra,extra);
+    const imgData=img.naturalWidth?{img:img,sx:(c/COLS)*img.naturalWidth,sy:(r/ROWS)*img.naturalHeight,sw:img.naturalWidth/COLS,sh:img.naturalHeight/ROWS}:null;
+    drawPieceShape(pctx,CELL,CELL,tabs,TAB,imgData?null:`hsl(${(r*COLS+c)*22+320},55%,${45+r*5}%)`,"rgba(255,255,255,0.35)",imgData);
     pctx.restore();
-
-    // Overlay de brilho
-    pctx.save();
-    pctx.translate(extra, extra);
-    const grad = pctx.createLinearGradient(0,0,CELL,CELL);
-    grad.addColorStop(0,"rgba(255,255,255,0.12)");
-    grad.addColorStop(0.5,"rgba(255,255,255,0)");
-    grad.addColorStop(1,"rgba(0,0,0,0.08)");
-
-    pctx.save();
-    pctx.beginPath();
-    // Reclip
-    pctx.rect(-extra,-extra,pw,ph);
-    pctx.clip();
-    pctx.fillStyle = grad;
-    pctx.fillRect(0,0,CELL,CELL);
-    pctx.restore();
-    pctx.restore();
-
-    // Elemento DOM
-    const el = document.createElement("div");
-    el.className = "puzzle-piece";
-    el.dataset.row = r;
-    el.dataset.col = c;
-    el.style.width = pw + "px";
-    el.style.height = ph + "px";
-    el.appendChild(cv);
-
-    // Posição alvo no board (considerando o extra do canvas)
-    const targetX = PAD + c*CELL - extra;
-    const targetY = PAD + r*CELL - extra;
-
+    const el=document.createElement("div");
+    el.className="puzzle-piece";el.dataset.row=r;el.dataset.col=c;
+    el.style.width=pw+"px";el.style.height=ph+"px";el.appendChild(cv);
+    const targetX=PAD+c*CELL-extra;const targetY=PAD+r*CELL-extra;
     container.appendChild(el);
-
-    pieces.push({ el, r, c, extra, pw, ph, targetX, targetY, snapped:false, tabs });
+    pieces.push({el,r,c,extra,pw,ph,targetX,targetY,snapped:false,tabs});
   });
-
-  scatterPieces();
-  addDragListeners();
-  puzzleReady = true;
+  scatterPieces();addDragListeners();puzzleReady=true;
 }
-
-// ── Dispersar peças ao redor do board ────────────────────────────
 function scatterPieces(){
-  snappedCount = 0;
-  updateProgress();
-  document.getElementById("puzzleProgressFill").style.width = "0%";
-
-  const boardLeft = PAD;
-  const boardTop  = PAD;
-  const boardRight = PAD + W;
-  const boardBottom = PAD + H;
-  const cW = parseInt(container.style.width)||W+PAD*2;
-  const cH = parseInt(container.style.height)||H+PAD*2;
-
-  pieces.forEach((p,i) => {
-    p.snapped = false;
-    p.el.classList.remove("snapped");
-
-    // Tentar colocar em zona ao redor do board
-    let x, y, tries = 0;
-    do {
-      const zone = i % 4;
-      if(zone===0){ // topo
-        x = Math.random()*(cW-p.pw);
-        y = Math.random()*(boardTop-p.ph-20);
-      } else if(zone===1){ // base
-        x = Math.random()*(cW-p.pw);
-        y = boardBottom+20+Math.random()*(cH-boardBottom-p.ph-20);
-      } else if(zone===2){ // esquerda
-        x = Math.random()*(boardLeft-p.pw-20);
-        y = Math.random()*(cH-p.ph);
-      } else { // direita
-        x = boardRight+20+Math.random()*(cW-boardRight-p.pw-20);
-        y = Math.random()*(cH-p.ph);
-      }
-      x = Math.max(0, Math.min(cW-p.pw, x));
-      y = Math.max(0, Math.min(cH-p.ph, y));
-      tries++;
-    } while(tries<6 && x>boardLeft-p.pw && x<boardRight && y>boardTop-p.ph && y<boardBottom);
-
-    const rot = (Math.random()-0.5)*30;
-    p.el.style.transition = "none";
-    p.el.style.left = x+"px";
-    p.el.style.top  = y+"px";
-    p.el.style.transform = `rotate(${rot}deg)`;
-    p.currentX = x; p.currentY = y; p.currentRot = rot;
-
-    // Resetar ghost
-    const ghost = document.getElementById(`cell-${p.r}-${p.c}`);
-    if(ghost) ghost.classList.remove("filled");
+  snappedCount=0;updateProgress();
+  document.getElementById("puzzleProgressFill").style.width="0%";
+  const boardLeft=PAD,boardTop=PAD,boardRight=PAD+W,boardBottom=PAD+H;
+  const cW=parseInt(container.style.width)||W+PAD*2;
+  const cH=parseInt(container.style.height)||H+PAD*2;
+  pieces.forEach((p,i)=>{
+    p.snapped=false;p.el.classList.remove("snapped");
+    let x,y,tries=0;
+    do{
+      const zone=i%4;
+      if(zone===0){x=Math.random()*(cW-p.pw);y=Math.random()*(boardTop-p.ph-20);}
+      else if(zone===1){x=Math.random()*(cW-p.pw);y=boardBottom+20+Math.random()*(cH-boardBottom-p.ph-20);}
+      else if(zone===2){x=Math.random()*(boardLeft-p.pw-20);y=Math.random()*(cH-p.ph);}
+      else{x=boardRight+20+Math.random()*(cW-boardRight-p.pw-20);y=Math.random()*(cH-p.ph);}
+      x=Math.max(0,Math.min(cW-p.pw,x));y=Math.max(0,Math.min(cH-p.ph,y));tries++;
+    }while(tries<6&&x>boardLeft-p.pw&&x<boardRight&&y>boardTop-p.ph&&y<boardBottom);
+    const rot=(Math.random()-0.5)*30;
+    p.el.style.transition="none";p.el.style.left=x+"px";p.el.style.top=y+"px";
+    p.el.style.transform=`rotate(${rot}deg)`;p.currentX=x;p.currentY=y;p.currentRot=rot;
+    const ghost=document.getElementById(`cell-${p.r}-${p.c}`);if(ghost)ghost.classList.remove("filled");
   });
-
   document.getElementById("puzzle-complete-msg").classList.remove("show");
-  document.getElementById("puzzleStatus").textContent = "✦ arraste as peças para o coração ✦";
+  document.getElementById("puzzleStatus").textContent="✦ arraste as peças para o coração ✦";
   document.getElementById("puzzleStatus").classList.remove("complete");
 }
-
-// ── Drag & Drop ───────────────────────────────────────────────────
-let dragging = null;
-let dragOffX = 0, dragOffY = 0;
-
+let dragging=null,dragOffX=0,dragOffY=0;
 function addDragListeners(){
-  pieces.forEach(p => {
-    p.el.addEventListener("mousedown",  e=>startDrag(e,p,false));
-    p.el.addEventListener("touchstart", e=>startDrag(e,p,true), {passive:false});
+  pieces.forEach(p=>{
+    p.el.addEventListener("mousedown",e=>startDrag(e,p,false));
+    p.el.addEventListener("touchstart",e=>startDrag(e,p,true),{passive:false});
   });
-  document.addEventListener("mousemove",  e=>onDrag(e,false));
-  document.addEventListener("touchmove",  e=>onDrag(e,true), {passive:false});
-  document.addEventListener("mouseup",    e=>endDrag());
-  document.addEventListener("touchend",   e=>endDrag());
+  document.addEventListener("mousemove",e=>onDrag(e,false));
+  document.addEventListener("touchmove",e=>onDrag(e,true),{passive:false});
+  document.addEventListener("mouseup",e=>endDrag());
+  document.addEventListener("touchend",e=>endDrag());
 }
-
-function startDrag(e, p, touch){
-  if(p.snapped || autoSolving) return;
-  e.preventDefault();
-  dragging = p;
-  p.el.classList.add("dragging");
-
-  const rect = container.getBoundingClientRect();
-  const cx = touch ? e.touches[0].clientX : e.clientX;
-  const cy = touch ? e.touches[0].clientY : e.clientY;
-  dragOffX = cx - rect.left - p.currentX;
-  dragOffY = cy - rect.top  - p.currentY;
+function startDrag(e,p,touch){
+  if(p.snapped||autoSolving)return;e.preventDefault();dragging=p;p.el.classList.add("dragging");
+  const rect=container.getBoundingClientRect();
+  const cx=touch?e.touches[0].clientX:e.clientX;const cy=touch?e.touches[0].clientY:e.clientY;
+  dragOffX=cx-rect.left-p.currentX;dragOffY=cy-rect.top-p.currentY;
 }
-
-function onDrag(e, touch){
-  if(!dragging) return;
-  e.preventDefault();
-  const rect = container.getBoundingClientRect();
-  const cx = touch ? e.touches[0].clientX : e.clientX;
-  const cy = touch ? e.touches[0].clientY : e.clientY;
-  let nx = cx - rect.left - dragOffX;
-  let ny = cy - rect.top  - dragOffY;
-
-  nx = Math.max(-dragging.pw/2, Math.min(parseInt(container.style.width)-dragging.pw/2, nx));
-  ny = Math.max(-dragging.ph/2, Math.min(parseInt(container.style.height)-dragging.ph/2, ny));
-
-  dragging.el.style.left = nx+"px";
-  dragging.el.style.top  = ny+"px";
-  dragging.el.style.transform = "rotate(0deg) scale(1.05)";
-  dragging.currentX = nx;
-  dragging.currentY = ny;
+function onDrag(e,touch){
+  if(!dragging)return;e.preventDefault();
+  const rect=container.getBoundingClientRect();
+  const cx=touch?e.touches[0].clientX:e.clientX;const cy=touch?e.touches[0].clientY:e.clientY;
+  let nx=cx-rect.left-dragOffX;let ny=cy-rect.top-dragOffY;
+  nx=Math.max(-dragging.pw/2,Math.min(parseInt(container.style.width)-dragging.pw/2,nx));
+  ny=Math.max(-dragging.ph/2,Math.min(parseInt(container.style.height)-dragging.ph/2,ny));
+  dragging.el.style.left=nx+"px";dragging.el.style.top=ny+"px";
+  dragging.el.style.transform="rotate(0deg) scale(1.05)";
+  dragging.currentX=nx;dragging.currentY=ny;
 }
-
 function endDrag(){
-  if(!dragging) return;
-  const p = dragging;
-  dragging = null;
-  p.el.classList.remove("dragging");
-
-  // Checar snap
-  const snapThresh = CELL * 0.45;
-  const dx = p.currentX - p.targetX;
-  const dy = p.currentY - p.targetY;
-
-  if(Math.abs(dx)<snapThresh && Math.abs(dy)<snapThresh){
-    snapPiece(p);
-  } else {
-    p.el.style.transform = `rotate(${(Math.random()-0.5)*20}deg)`;
-  }
+  if(!dragging)return;const p=dragging;dragging=null;p.el.classList.remove("dragging");
+  const snapThresh=CELL*.45;const dx=p.currentX-p.targetX;const dy=p.currentY-p.targetY;
+  if(Math.abs(dx)<snapThresh&&Math.abs(dy)<snapThresh)snapPiece(p);
+  else p.el.style.transform=`rotate(${(Math.random()-0.5)*20}deg)`;
 }
-
 function snapPiece(p){
-  if(p.snapped) return;
-  p.snapped = true;
-  p.el.classList.add("snapped");
-  p.el.style.transition = "left 0.3s cubic-bezier(0.34,1.56,0.64,1), top 0.3s cubic-bezier(0.34,1.56,0.64,1), transform 0.3s ease";
-  p.el.style.left = p.targetX+"px";
-  p.el.style.top  = p.targetY+"px";
-  p.el.style.transform = "rotate(0deg)";
-  p.el.style.zIndex = 5;
-
-  const ghost = document.getElementById(`cell-${p.r}-${p.c}`);
-  if(ghost) ghost.classList.add("filled");
-
-  snappedCount++;
-  updateProgress();
-  snapSound();
-
-  if(snappedCount === heartCells.length){
-    setTimeout(onPuzzleComplete, 600);
-  }
+  if(p.snapped)return;p.snapped=true;p.el.classList.add("snapped");
+  p.el.style.transition="left 0.3s cubic-bezier(0.34,1.56,0.64,1), top 0.3s cubic-bezier(0.34,1.56,0.64,1), transform 0.3s ease";
+  p.el.style.left=p.targetX+"px";p.el.style.top=p.targetY+"px";p.el.style.transform="rotate(0deg)";p.el.style.zIndex=5;
+  const ghost=document.getElementById(`cell-${p.r}-${p.c}`);if(ghost)ghost.classList.add("filled");
+  snappedCount++;updateProgress();snapSound();
+  if(snappedCount===heartCells.length)setTimeout(onPuzzleComplete,600);
 }
-
 function updateProgress(){
-  const pct = (snappedCount / heartCells.length) * 100;
-  document.getElementById("puzzleProgressFill").style.width = pct+"%";
-  if(snappedCount>0 && snappedCount < heartCells.length){
-    document.getElementById("puzzleStatus").textContent = `✦ ${snappedCount} de ${heartCells.length} peças no lugar ✦`;
-  }
+  const pct=(snappedCount/heartCells.length)*100;
+  document.getElementById("puzzleProgressFill").style.width=pct+"%";
+  if(snappedCount>0&&snappedCount<heartCells.length)
+    document.getElementById("puzzleStatus").textContent=`✦ ${snappedCount} de ${heartCells.length} peças no lugar ✦`;
 }
-
 function onPuzzleComplete(){
   document.getElementById("puzzle-complete-msg").classList.add("show");
-  document.getElementById("puzzleStatus").textContent = "❤ nosso coração está completo ❤";
+  document.getElementById("puzzleStatus").textContent="❤ nosso coração está completo ❤";
   document.getElementById("puzzleStatus").classList.add("complete");
-  document.getElementById("btnSolve").style.display = "none";
+  document.getElementById("btnSolve").style.display="none";
   launchConfetti();
-  // Efeito de brilho no board
-  board.style.boxShadow = "0 0 0 2px rgba(200,169,110,.6), 0 30px 80px rgba(0,0,0,.7), 0 0 60px rgba(200,100,130,.3), inset 0 0 60px rgba(200,100,130,.15)";
+  board.style.boxShadow="0 0 0 2px rgba(200,169,110,.6), 0 30px 80px rgba(0,0,0,.7), 0 0 60px rgba(200,100,130,.3), inset 0 0 60px rgba(200,100,130,.15)";
   setTimeout(()=>{board.style.transition="box-shadow 1s";board.style.boxShadow="0 0 0 1px rgba(200,169,110,.2), 0 30px 80px rgba(0,0,0,.7)";},3000);
 }
-
-// ── Auto Solve ────────────────────────────────────────────────────
-window.autoSolvePuzzle = function(){
-  if(autoSolving) return;
-  autoSolving = true;
-  document.getElementById("btnSolve").style.opacity = "0.4";
-
-  const remaining = pieces.filter(p=>!p.snapped);
-  remaining.sort(()=>Math.random()-0.5);
-
+window.autoSolvePuzzle=function(){
+  if(autoSolving)return;autoSolving=true;document.getElementById("btnSolve").style.opacity="0.4";
+  const remaining=pieces.filter(p=>!p.snapped);remaining.sort(()=>Math.random()-0.5);
   remaining.forEach((p,i)=>{
     setTimeout(()=>{
       p.el.style.transition="left 0.6s cubic-bezier(0.34,1.56,0.64,1),top 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.5s ease";
-      p.el.style.left = p.targetX+"px";
-      p.el.style.top  = p.targetY+"px";
-      p.el.style.transform = "rotate(0deg)";
-      setTimeout(()=>{ snapPiece(p); autoSolving = i===remaining.length-1 ? false : autoSolving; },650);
-    }, i*80);
+      p.el.style.left=p.targetX+"px";p.el.style.top=p.targetY+"px";p.el.style.transform="rotate(0deg)";
+      setTimeout(()=>{snapPiece(p);autoSolving=i===remaining.length-1?false:autoSolving;},650);
+    },i*80);
   });
 };
-
-// ── Reset ─────────────────────────────────────────────────────────
-window.resetPuzzle = function(){
-  autoSolving = false;
-  document.getElementById("btnSolve").style.opacity = "1";
-  document.getElementById("btnSolve").style.display = "";
-  pieces.forEach(p=>{p.el.style.transition="none";});
-  setTimeout(scatterPieces, 50);
+window.resetPuzzle=function(){
+  autoSolving=false;document.getElementById("btnSolve").style.opacity="1";
+  document.getElementById("btnSolve").style.display="";
+  pieces.forEach(p=>{p.el.style.transition="none";});setTimeout(scatterPieces,50);
 };
+window.initPuzzle=function(){if(puzzleReady)resetPuzzle();};
+function snapSound(){try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.setValueAtTime(880,ac.currentTime);o.frequency.exponentialRampToValueAtTime(1200,ac.currentTime+0.08);g.gain.setValueAtTime(0.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.15);o.start();o.stop(ac.currentTime+0.15);setTimeout(()=>ac.close(),300);}catch(e){}}
+})();
 
-// ── Init ──────────────────────────────────────────────────────────
-window.initPuzzle = function(){
-  if(puzzleReady) resetPuzzle();
-};
-
-// Som de snap
-function snapSound(){
-  try{
-    const ac=new(window.AudioContext||window.webkitAudioContext)();
-    const o=ac.createOscillator();const g=ac.createGain();
-    o.connect(g);g.connect(ac.destination);
-    o.frequency.setValueAtTime(880,ac.currentTime);
-    o.frequency.exponentialRampToValueAtTime(1200,ac.currentTime+0.08);
-    g.gain.setValueAtTime(0.15,ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.15);
-    o.start();o.stop(ac.currentTime+0.15);
-    setTimeout(()=>ac.close(),300);
-  }catch(e){}
-}
-
-})(); // fim do IIFE do puzzle
-
-/* ══════════════════════════════════════════════
-   QUIZ
-══════════════════════════════════════════════ */
 const questions=[
   {text:"Qual é a nossa data de namoro?",opts:[{i:"📅",t:"14 de fevereiro de 2026",ok:true},{i:"📅",t:"12 de janeiro de 2026",ok:false},{i:"📅",t:"20 de março de 2025",ok:false},{i:"📅",t:"01 de dezembro de 2025",ok:false}],fb:"Isso mesmo! 14 de fevereiro de 2026 — o dia em que tudo começou. 💗"},
   {text:"O que mais amo em você?",opts:[{i:"💗",t:"Quando demonstra todo o seu amor por mim",ok:true},{i:"🎵",t:"Quando canta baixinho sem perceber",ok:false},{i:"📚",t:"Quando me indica séries para assistir",ok:false},{i:"☕",t:"Quando prepara café de manhã",ok:false}],fb:"Sim! Quando você demonstra todo o seu amor por mim, o mundo inteiro para. 🌸"},
@@ -1252,9 +809,6 @@ function showResult(){document.getElementById("qCard").style.display="none";cons
 document.getElementById("resEmoji").textContent=emoji;document.getElementById("resTitle").textContent=title;document.getElementById("resMsg").textContent=msg;document.getElementById("resScore").textContent=`${score} de ${questions.length} acertos ✦`;}
 startGame();
 
-/* ══════════════════════════════════════════════
-   CONFETTI
-══════════════════════════════════════════════ */
 function launchConfetti(){
   const cv=document.getElementById("confetti-canvas");cv.style.display="block";cv.width=innerWidth;cv.height=innerHeight;
   const ctx=cv.getContext("2d");
@@ -1265,9 +819,6 @@ function launchConfetti(){
   (function draw(){ctx.clearRect(0,0,cv.width,cv.height);pieces.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.rot+=p.rv;p.vy+=.07;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.col;ctx.font=`${p.r*2}px serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(p.shape,0,0);ctx.restore();});frame++;if(frame<260)requestAnimationFrame(draw);else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display="none";}})();
 }
 
-/* ══════════════════════════════════════════════
-   PASSWORD
-══════════════════════════════════════════════ */
 let pwVal="";
 function pwPress(d){if(pwVal.length>=8)return;pwVal+=d;updateDots();}
 function pwDel(){pwVal=pwVal.slice(0,-1);updateDots();document.getElementById("pwErr").classList.remove("show");}
@@ -1276,7 +827,6 @@ function pwCheck(){if(pwVal.length<8){shakeBox();showPwErr("A data está incompl
 function shakeBox(){const b=document.getElementById("pwBox");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");setTimeout(()=>b.classList.remove("shake"),500);}
 function showPwErr(msg){const e=document.getElementById("pwErr");e.textContent=msg;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),3000);}
 function pwSuccess(){paperSound();miniConfetti();const box=document.getElementById("pwBox");box.style.transition="all .8s ease";box.style.opacity="0";box.style.transform="scale(.88) translateY(10px)";setTimeout(()=>{box.style.display="none";const env=document.getElementById("envWrap");env.style.display="flex";env.style.opacity="0";env.style.transition="opacity 1s ease";setTimeout(()=>env.style.opacity="1",60);},820);}
-
 function miniConfetti(){
   const cv=document.getElementById("confetti-canvas");cv.style.display="block";cv.width=innerWidth;cv.height=innerHeight;
   const ctx=cv.getContext("2d");
@@ -1285,9 +835,6 @@ function miniConfetti(){
   (function draw(){ctx.clearRect(0,0,cv.width,cv.height);els.forEach(e=>{e.y+=e.vy;e.vy+=.28;e.x+=e.vx;e.a-=.014;if(e.a<=0)return;ctx.globalAlpha=Math.max(0,e.a);ctx.font=`${e.size}px serif`;ctx.textAlign="center";ctx.fillText(e.icon,e.x,e.y);});ctx.globalAlpha=1;f++;if(f<110)requestAnimationFrame(draw);else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display="none";}})();
 }
 
-/* ══════════════════════════════════════════════
-   LETTER
-══════════════════════════════════════════════ */
 let qrGenerated=false;
 function openLetter(){paperSound();document.getElementById("letter-modal").classList.add("open");document.body.style.overflow="hidden";if(!qrGenerated){generateQR();qrGenerated=true;}}
 function closeLetter(){document.getElementById("letter-modal").classList.remove("open");document.body.style.overflow="";}
@@ -1295,15 +842,9 @@ document.getElementById("letter-modal").addEventListener("click",e=>{if(e.target
 function generateQR(){const el=document.getElementById("qrcode");if(el.querySelector("canvas,img"))return;new QRCode(el,{text:CFG.videoUrl,width:180,height:180,colorDark:"#7a2d3a",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});}
 function paperSound(){try{const ac=new(window.AudioContext||window.webkitAudioContext)();const buf=ac.createBuffer(1,ac.sampleRate*.4,ac.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.max(0,1-i/d.length)*.09;const src=ac.createBufferSource();src.buffer=buf;const f=ac.createBiquadFilter();f.type="bandpass";f.frequency.value=2600;f.Q.value=.38;src.connect(f);f.connect(ac.destination);src.start();setTimeout(()=>ac.close(),600);}catch(e){}}
 
-/* ══════════════════════════════════════════════
-   COUNTER
-══════════════════════════════════════════════ */
 function updateCounter(){const diff=new Date()-CFG.inicio;if(diff<0)return;document.getElementById("cD").textContent=Math.floor(diff/86400000);document.getElementById("cH").textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,"0");document.getElementById("cM").textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,"0");document.getElementById("cS").textContent=String(Math.floor((diff%60000)/1000)).padStart(2,"0");}
 updateCounter();setInterval(updateCounter,1000);
 
-/* ══════════════════════════════════════════════
-   MUSIC
-══════════════════════════════════════════════ */
 let isPlaying=false;
 document.getElementById("vinyl").addEventListener("click",()=>{const disc=document.getElementById("vinylDisc");const audio=document.getElementById("bgMusic");const lbl=document.getElementById("vinylLbl");if(isPlaying){audio.pause();disc.classList.remove("spin");lbl.textContent="▶ música";isPlaying=false;}else{try{new(window.AudioContext||window.webkitAudioContext)().resume();}catch(e){}audio.play().catch(()=>{});disc.classList.add("spin");lbl.textContent="❚❚ tocando";isPlaying=true;}});
 </script>
