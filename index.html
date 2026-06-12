@@ -38,19 +38,17 @@ body{background:var(--black);color:var(--cream);font-family:'Jost',sans-serif;fo
 
 #petal-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
 #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:8000;display:none;}
-
-/* === ORBs: GPU layer + mobile fix === */
-.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;will-change:transform;transform:translateZ(0);}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
 .orb1{width:700px;height:700px;background:rgba(180,70,100,.12);top:-200px;left:-200px;animation:orbFloat 14s ease-in-out infinite;}
 .orb2{width:600px;height:600px;background:rgba(160,60,90,.1);right:-180px;top:35%;animation:orbFloat 17s ease-in-out infinite reverse;}
 .orb3{width:500px;height:500px;background:rgba(200,110,140,.08);bottom:-150px;left:25%;animation:orbFloat 20s ease-in-out infinite;}
-@keyframes orbFloat{0%,100%{transform:translate(0,0) translateZ(0);}33%{transform:translate(30px,-25px) translateZ(0);}66%{transform:translate(-20px,20px) translateZ(0);}}
+@keyframes orbFloat{0%,100%{transform:translate(0,0);}33%{transform:translate(30px,-25px);}66%{transform:translate(-20px,20px);}}
 
 #vinyl{position:fixed;bottom:1.8rem;left:1.8rem;z-index:5000;display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;}
 .vinyl-disc{width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#1a1213 0%,#1a1213 17%,#2d1f20 21%,#0d0a0a 25%,#1a1213 29%,#0d0a0a 68%,#1a1213 73%,var(--gold) 76%,#0d0a0a 80%);box-shadow:0 0 0 2px rgba(200,169,110,.25),0 6px 22px rgba(0,0,0,.6);position:relative;transition:box-shadow .4s;}
 .vinyl-disc::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,var(--gold),#9e7a3a);box-shadow:0 0 10px rgba(200,169,110,.5);}
 .vinyl-disc.spin{animation:vinylSpin 3s linear infinite;box-shadow:0 0 0 2px rgba(200,169,110,.5),0 6px 22px rgba(0,0,0,.6),0 0 35px rgba(200,169,110,.18);}
-@keyframes vinylSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes vinylSpin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
 .vinyl-lbl{font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(200,169,110,.6);}
 .vinyl-tip{position:absolute;left:84px;bottom:8px;background:rgba(15,5,8,.96);border:1px solid rgba(200,169,110,.3);padding:.4rem 1rem;border-radius:4px;white-space:nowrap;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.8rem;color:var(--gold-light);opacity:0;transform:translateX(8px);transition:all .3s;pointer-events:none;}
 #vinyl:hover .vinyl-tip{opacity:1;transform:translateX(0);}
@@ -161,7 +159,7 @@ section{position:relative;z-index:2;}
 #gallery-section{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 1.5rem;}
 .gallery-grid{display:flex;flex-wrap:wrap;gap:1.6rem;justify-content:center;max-width:900px;}
 .polaroid{background:linear-gradient(155deg,#fdfaf4,#f5ede0);padding:.9rem .9rem 2.6rem;border-radius:2px;box-shadow:0 10px 40px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.25);width:clamp(140px,26vw,190px);opacity:0;transform:translateY(25px) rotate(var(--rot));transition:opacity .8s ease,transform .8s ease,box-shadow .3s;cursor:pointer;}
-.polaroid.vis{opacity:1;transform:translateY(0) rotate(var(--rot));}
+.polaroid.vis{opacity:1;transform:translateY(0) rotate(var(--rot));animation:polFloat 6s var(--delay) ease-in-out infinite;}
 .polaroid:hover{box-shadow:0 22px 60px rgba(0,0,0,.6);z-index:10;transform:translateY(-10px) rotate(0deg) scale(1.06)!important;}
 @keyframes polFloat{0%,100%{transform:translateY(0) rotate(var(--rot));}50%{transform:translateY(-6px) rotate(calc(var(--rot)*.4));}}
 .pol-img{width:100%;aspect-ratio:1;background:linear-gradient(135deg,var(--wine) 0%,#3a0f18 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
@@ -233,18 +231,6 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
 .reveal.vis{opacity:1;transform:translateY(0);}
 .ornament{display:flex;align-items:center;justify-content:center;gap:1rem;margin:2rem auto;max-width:380px;}
 .orn-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,.35),transparent);}
-
-/* =============================================
-   OTIMIZAÇÕES MOBILE — principal fonte de lag
-   ============================================= */
-@media(max-width:768px){
-  /* Blur de 100px em 3 divs animadas = GPU killer no celular */
-  .orb{filter:blur(22px)!important;animation:none!important;}
-  /* Segundo orbe flutuante da árvore também é pesado */
-  .tree-glow-orb{display:none;}
-  /* Polaroid float animation desnecessária no mobile */
-  .polaroid.vis{animation:none!important;}
-}
 
 @media(max-width:640px){
   .counter-num{font-size:3rem;}
@@ -501,11 +487,6 @@ footer{background:rgba(5,2,3,1);color:var(--cream);text-align:center;padding:3re
 <audio id="bgMusic" loop><source src="amor.mp3" type="audio/mpeg"></audio>
 
 <script>
-/* =============================================
-   DETECÇÃO DE MOBILE — usada em todos os sistemas
-   ============================================= */
-const IS_MOBILE = window.innerWidth < 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
 const CFG = {
   videoUrl: "https://drive.google.com/file/d/1s43YGqC9tD5ZGxjUD6gSmDjd-TuCQA16/view?usp=sharing",
   senha:    "14022026",
@@ -523,12 +504,10 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("intro").classList.add("out");
     revealHero();
-    /* Chuva de corações cria DOM nodes em loop — pesado demais no mobile */
-    if (!IS_MOBILE) initRainHearts();
+    initRainHearts();
     initPuzzle();
   }, 5200);
 });
-
 function vis(id){ const e=document.getElementById(id);if(e)e.classList.add("vis"); }
 function revealHero(){
   setTimeout(()=>vis("hNames"),200);setTimeout(()=>vis("hRose"),600);
@@ -551,22 +530,12 @@ function initRainHearts(){
   },900);
 }
 
-/* ========== ÁRVORE CEREJEIRA — otimizada para mobile ========== */
+/* ========== ÁRVORE CEREJEIRA ========== */
 (function(){
   const cv=document.getElementById("tree-canvas");
   const ctx=cv.getContext("2d");
   let W,H,animT=0,treeSnap=null;
   let fallingPetals=[],sparks=[],wfloats=[],lastPetal=0;
-
-  /* Limites adaptados ao dispositivo */
-  const MAX_PETALS    = IS_MOBILE ? 8  : 28;
-  const SPARKS_COUNT  = IS_MOBILE ? 4  : 18;
-  const WFLOATS_COUNT = IS_MOBILE ? 3  : 10;
-  const MIN_BRANCH    = IS_MOBILE ? 13 : 7;   /* para recursão da árvore */
-
-  /* Limitador de FPS: 30fps no mobile, 60fps no desktop */
-  const FRAME_MS = IS_MOBILE ? 1000/30 : 1000/60;
-  let lastFrameT = 0;
 
   const PC=["#f9b8cc","#fad4e0","#e8708e","#feeaf0","#d96888","#ffc5d5"];
   const WW=["eu te amo","para sempre","meu amor","❤","te amo","♥","amor","sempre","juntos"];
@@ -598,7 +567,7 @@ function initRainHearts(){
   }
 
   function drawBranch(x,y,a,len,w,d){
-    if(len<MIN_BRANCH)return; /* corta galhos mais cedo no mobile */
+    if(len<7)return;
     const x2=x+Math.cos(a)*len,y2=y+Math.sin(a)*len;
     const curve=len*0.12*(d%2===0?1:-1);
     const mx=(x+x2)/2+Math.cos(a+Math.PI/2)*curve;
@@ -676,7 +645,7 @@ function initRainHearts(){
   }
 
   function initSparks(){
-    sparks=Array.from({length:SPARKS_COUNT},()=>({
+    sparks=Array.from({length:18},()=>({
       x:Math.random()*W,y:Math.random()*H,
       vx:(Math.random()-.5)*.3,vy:-(Math.random()*.5+.1),
       r:Math.random()*2.5+.5,ph:Math.random()*Math.PI*2,
@@ -685,7 +654,7 @@ function initRainHearts(){
   }
 
   function initWfloats(){
-    wfloats=Array.from({length:WFLOATS_COUNT},()=>({
+    wfloats=Array.from({length:10},()=>({
       x:W*.1+Math.random()*W*.8,y:H*.1+Math.random()*H*.8,
       vy:Math.random()*.2+.05,sz:Math.random()*10+8,
       al:Math.random()*.38+.18,lbl:WW[Math.floor(Math.random()*WW.length)],
@@ -721,15 +690,10 @@ function initRainHearts(){
     ctx.restore();
   }
 
-  /* Loop com FPS cap: no mobile roda a ~30fps; no desktop ~60fps */
   function loop(ts){
-    requestAnimationFrame(loop);
-    if(ts - lastFrameT < FRAME_MS) return;
-    lastFrameT = ts;
-
     if(treeSnap)ctx.putImageData(treeSnap,0,0);
     animT+=.012;
-    if(ts-lastPetal>380&&fallingPetals.length<MAX_PETALS){fallingPetals.push(mkPetal());lastPetal=ts;}
+    if(ts-lastPetal>380&&fallingPetals.length<28){fallingPetals.push(mkPetal());lastPetal=ts;}
     fallingPetals=fallingPetals.filter(p=>p.y<H+55);
     fallingPetals.forEach(p=>{p.y+=p.vy;p.x+=p.vx+Math.sin(animT*.9+p.sw)*.7;p.rot+=p.rv;drawPetal(p);});
     sparks.forEach(s=>{
@@ -748,6 +712,7 @@ function initRainHearts(){
       ctx.fillStyle="rgba(205,172,115,.9)";ctx.textAlign="center";
       ctx.fillText(w.lbl,w.x,w.y);ctx.restore();
     });
+    requestAnimationFrame(loop);
   }
 
   resize();requestAnimationFrame(loop);
@@ -755,31 +720,18 @@ function initRainHearts(){
 })();
 /* ========== FIM ÁRVORE ========== */
 
-/* Canvas de pétalas flutuantes — reduzido no mobile, com FPS cap */
 (function(){
   const cv=document.getElementById("petal-canvas");const ctx=cv.getContext("2d");
   function sz(){cv.width=innerWidth;cv.height=innerHeight;}sz();addEventListener("resize",sz);
-  const PETAL_COUNT = IS_MOBILE ? 8 : 25;
-  const PETAL_MS    = IS_MOBILE ? 1000/30 : 1000/60;
   class Petal{constructor(i){this.reset(i);}
     reset(i){this.x=Math.random()*innerWidth;this.y=i?Math.random()*innerHeight:-25;this.size=Math.random()*15+6;this.speed=Math.random()*.65+.18;this.drift=(Math.random()-.5)*.55;this.alpha=Math.random()*.45+.15;this.rot=Math.random()*Math.PI*2;this.rv=(Math.random()-.5)*.03;const w=["♥","❤","♡","eu te amo","te amo","para sempre","❤","♥"];this.txt=w[Math.floor(Math.random()*w.length)];this.col=Math.random()>.5?"rgba(200,110,140,":"rgba(160,80,110,";}
     update(){this.y+=this.speed;this.x+=this.drift+Math.sin(Date.now()*.0008+this.y*.01)*.25;this.rot+=this.rv;if(this.y>innerHeight+30)this.reset(false);}
     draw(){ctx.save();ctx.globalAlpha=this.alpha;ctx.translate(this.x,this.y);ctx.rotate(this.rot);ctx.fillStyle=this.col+this.alpha+")";ctx.font=`${this.size}px 'Dancing Script',serif`;ctx.fillText(this.txt,0,0);ctx.restore();}
   }
-  const petals=Array.from({length:PETAL_COUNT},(_,i)=>new Petal(true));
-  let lastPetalT=0;
-  (function loop(ts){
-    if(ts-lastPetalT>=PETAL_MS){
-      lastPetalT=ts;
-      ctx.clearRect(0,0,cv.width,cv.height);
-      petals.forEach(p=>{p.update();p.draw();});
-    }
-    requestAnimationFrame(loop);
-  })();
+  const petals=Array.from({length:25},(_,i)=>new Petal(true));
+  (function loop(){ctx.clearRect(0,0,cv.width,cv.height);petals.forEach(p=>{p.update();p.draw();});requestAnimationFrame(loop);})();
 })();
 
-/* Partículas de fundo — completamente removidas no mobile (economiza 1 loop RAF) */
-if(!IS_MOBILE){
 (function(){
   const cv=document.createElement("canvas");cv.style.cssText="position:fixed;inset:0;z-index:0;pointer-events:none;";document.body.insertBefore(cv,document.body.firstChild);
   const ctx=cv.getContext("2d");let W,H,pts=[];
@@ -792,7 +744,6 @@ if(!IS_MOBILE){
   for(let i=0;i<60;i++)pts.push(new P());
   (function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.tick();p.draw();});requestAnimationFrame(loop);})();
 })();
-}
 
 const ioRev=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("vis");});},{threshold:.15});
 document.querySelectorAll(".reveal").forEach(el=>ioRev.observe(el));
@@ -814,13 +765,12 @@ PHOTOS.forEach((ph,i)=>{
   const wrap=document.createElement("div");
   wrap.className="polaroid";
   wrap.style.cssText=`--rot:${polRots2[i]}deg;--delay:${polDelay2[i]};`;
-  wrap.innerHTML=`<div class="pol-img"><img src="${ph.src}" alt="${ph.cap}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"></div><div class="pol-cap">${ph.cap}</div>`;
+  wrap.innerHTML=`<div class="pol-img"><img src="${ph.src}" alt="${ph.cap}" style="width:100%;height:100%;object-fit:cover;display:block;"></div><div class="pol-cap">${ph.cap}</div>`;
   gg2.appendChild(wrap);
 });
 const ioPol2=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add("vis"),i*120);});},{threshold:.05});
 document.querySelectorAll(".polaroid").forEach(p=>ioPol2.observe(p));
 
-/* ========== PUZZLE ========== */
 (function(){
 const HEART_GRID=[
   [0,1,1,0,1,1,0],
@@ -929,14 +879,6 @@ function scatterPieces(){
   document.getElementById("puzzleStatus").textContent="✦ arraste as peças para o coração ✦";
   document.getElementById("puzzleStatus").classList.remove("complete");
 }
-
-/* Cache do rect do container — evita layout reflow a cada touchmove */
-let containerRect=null;
-function refreshRect(){containerRect=container.getBoundingClientRect();}
-refreshRect();
-addEventListener("resize",refreshRect);
-addEventListener("scroll",refreshRect,{passive:true});
-
 let dragging=null,dragOffX=0,dragOffY=0;
 function addDragListeners(){
   pieces.forEach(p=>{
@@ -950,14 +892,15 @@ function addDragListeners(){
 }
 function startDrag(e,p,touch){
   if(p.snapped||autoSolving)return;e.preventDefault();dragging=p;p.el.classList.add("dragging");
-  refreshRect();
+  const rect=container.getBoundingClientRect();
   const cx=touch?e.touches[0].clientX:e.clientX;const cy=touch?e.touches[0].clientY:e.clientY;
-  dragOffX=cx-containerRect.left-p.currentX;dragOffY=cy-containerRect.top-p.currentY;
+  dragOffX=cx-rect.left-p.currentX;dragOffY=cy-rect.top-p.currentY;
 }
 function onDrag(e,touch){
   if(!dragging)return;e.preventDefault();
+  const rect=container.getBoundingClientRect();
   const cx=touch?e.touches[0].clientX:e.clientX;const cy=touch?e.touches[0].clientY:e.clientY;
-  let nx=cx-containerRect.left-dragOffX;let ny=cy-containerRect.top-dragOffY;
+  let nx=cx-rect.left-dragOffX;let ny=cy-rect.top-dragOffY;
   nx=Math.max(-dragging.pw/2,Math.min(parseInt(container.style.width)-dragging.pw/2,nx));
   ny=Math.max(-dragging.ph/2,Math.min(parseInt(container.style.height)-dragging.ph/2,ny));
   dragging.el.style.left=nx+"px";dragging.el.style.top=ny+"px";
