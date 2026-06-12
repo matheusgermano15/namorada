@@ -861,6 +861,15 @@ document.querySelectorAll(".polaroid").forEach(p=>ioPol2.observe(p));
    PROBLEMA 4 (drag não cancela com interrupção):
      sem handler de touchcancel → dragging fica "preso".
      FIX: touchcancel chama endDrag.
+
+   FIX MOBILE — TABULEIRO CORTADO:
+     Antes, CELL era ~78% da largura da tela e PAD era 180px,
+     o que dava um container com (W + PAD*2) muito maior que
+     a tela (ex: ~664px em uma tela de 390px). Como o board é
+     posicionado em "left: PAD" dentro do container, ele saía
+     da área visível e era cortado pelo overflow:hidden da
+     seção. Agora PAD é pequeno no mobile e CELL é calculado
+     para que W + PAD*2 caiba dentro da largura da tela.
    ======================================================== */
 (function(){
 const HEART_GRID=[
@@ -873,13 +882,16 @@ const HEART_GRID=[
 ];
 const ROWS=HEART_GRID.length;const COLS=HEART_GRID[0].length;
 const isMobile=window.innerWidth<600;
-const CELL=isMobile?Math.floor((window.innerWidth*.78)/COLS):Math.min(72,Math.floor((window.innerWidth*.55)/COLS));
+/* FIX: PAD reduzido no mobile e CELL calculado para que
+   W + PAD*2 caiba na largura da tela (94% para dar uma
+   pequena margem), evitando que o coração seja cortado. */
+const PAD=isMobile?40:240;
+const CELL=isMobile?Math.floor((window.innerWidth*.94-PAD*2)/COLS):Math.min(72,Math.floor((window.innerWidth*.55)/COLS));
 const W=COLS*CELL;const H=ROWS*CELL;
 const TAB=Math.round(CELL*.28);
 const board=document.getElementById("puzzle-board");
 board.style.width=W+"px";board.style.height=H+"px";board.style.position="relative";
 const container=document.getElementById("puzzle-container");
-const PAD=isMobile?180:240;
 container.style.position="relative";
 container.style.width=(W+PAD*2)+"px";
 container.style.maxWidth="100%";
