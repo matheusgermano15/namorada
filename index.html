@@ -879,7 +879,7 @@ const TAB=Math.round(CELL*.28);
 const board=document.getElementById("puzzle-board");
 board.style.width=W+"px";board.style.height=H+"px";board.style.position="relative";
 const container=document.getElementById("puzzle-container");
-const PAD=isMobile?Math.max(28,Math.floor(window.innerWidth*0.10)):240;
+const PAD=isMobile?180:240;
 container.style.position="relative";
 container.style.width=(W+PAD*2)+"px";
 container.style.maxWidth="100%";
@@ -994,4 +994,162 @@ let dragging=null,dragOffX=0,dragOffY=0;
 function onMouseMove(e){ moveDrag(e,false); }
 function onTouchMove(e){ moveDrag(e,true); }
 
-f
+function addDragListeners(){
+  pieces.forEach(p=>{
+    p.el.addEventListener("mousedown",e=>startDrag(e,p,false));
+    p.el.addEventListener("touchstart",e=>startDrag(e,p,true),{passive:false});
+  });
+  /* FIX: mouseup e touchend/cancel sempre ativos, mas SEM touchmove global */
+  document.addEventListener("mouseup",endDrag);
+  document.addEventListener("touchend",endDrag,{passive:true});
+  document.addEventListener("touchcancel",endDrag,{passive:true}); /* FIX: trata cancelamento */
+}
+
+function startDrag(e,p,touch){
+  if(p.snapped||autoSolving)return;
+  e.preventDefault();
+  dragging=p;
+  p.el.classList.add("dragging");
+  refreshRect(); /* FIX: sempre atualiza rect ao iniciar drag */
+  const src=touch?e.touches[0]:e;
+  dragOffX=src.clientX-containerRect.left-p.currentX;
+  dragOffY=src.clientY-containerRect.top-p.currentY;
+  /* FIX: adiciona listener de move APENAS quando arrastando */
+  if(touch){
+    document.addEventListener("touchmove",onTouchMove,{passive:false});
+  } else {
+    document.addEventListener("mousemove",onMouseMove);
+  }
+}
+
+function moveDrag(e,touch){
+  if(!dragging)return;
+  /* FIX: previne crash quando touches fica vazio durante movimento */
+  if(touch&&(!e.touches||!e.touches.length))return;
+  e.preventDefault();
+  /* FIX: atualiza rect se ficou stale (a cada 200ms durante drag) */
+  if(Date.now()-lastRectRefresh>200) refreshRect();
+  const src=touch?e.touches[0]:e;
+  let nx=src.clientX-containerRect.left-dragOffX;
+  let ny=src.clientY-containerRect.top-dragOffY;
+  nx=Math.max(-dragging.pw/2,Math.min(parseInt(container.style.width)-dragging.pw/2,nx));
+  ny=Math.max(-dragging.ph/2,Math.min(parseInt(container.style.height)-dragging.ph/2,ny));
+  dragging.el.style.left=nx+"px";dragging.el.style.top=ny+"px";
+  dragging.el.style.transform="rotate(0deg) scale(1.05)";
+  dragging.currentX=nx;dragging.currentY=ny;
+}
+
+function endDrag(){
+  if(!dragging)return;
+  /* FIX: remove os listeners de move ao soltar */
+  document.removeEventListener("touchmove",onTouchMove);
+  document.removeEventListener("mousemove",onMouseMove);
+  const p=dragging;
+  dragging=null;
+  p.el.classList.remove("dragging");
+  const snapThresh=CELL*.45;
+  const dx=p.currentX-p.targetX;const dy=p.currentY-p.targetY;
+  if(Math.abs(dx)<snapThresh&&Math.abs(dy)<snapThresh)snapPiece(p);
+  else p.el.style.transform=`rotate(${(Math.random()-0.5)*20}deg)`;
+}
+
+function snapPiece(p){
+  if(p.snapped)return;p.snapped=true;p.el.classList.add("snapped");
+  p.el.style.transition="left 0.3s cubic-bezier(0.34,1.56,0.64,1), top 0.3s cubic-bezier(0.34,1.56,0.64,1), transform 0.3s ease";
+  p.el.style.left=p.targetX+"px";p.el.style.top=p.targetY+"px";p.el.style.transform="rotate(0deg)";p.el.style.zIndex=5;
+  const ghost=document.getElementById(`cell-${p.r}-${p.c}`);if(ghost)ghost.classList.add("filled");
+  snappedCount++;updateProgress();snapSound();
+  if(snappedCount===heartCells.length)setTimeout(onPuzzleComplete,600);
+}
+function updateProgress(){
+  const pct=(snappedCount/heartCells.length)*100;
+  document.getElementById("puzzleProgressFill").style.width=pct+"%";
+  if(snappedCount>0&&snappedCount<heartCells.length)
+    document.getElementById("puzzleStatus").textContent=`✦ ${snappedCount} de ${heartCells.length} peças no lugar ✦`;
+}
+function onPuzzleComplete(){
+  document.getElementById("puzzle-complete-msg").classList.add("show");
+  document.getElementById("puzzleStatus").textContent="❤ nosso coração está completo ❤";
+  document.getElementById("puzzleStatus").classList.add("complete");
+  document.getElementById("btnSolve").style.display="none";
+  launchConfetti();
+  board.style.boxShadow="0 0 0 2px rgba(200,169,110,.6), 0 30px 80px rgba(0,0,0,.7), 0 0 60px rgba(200,100,130,.3), inset 0 0 60px rgba(200,100,130,.15)";
+  setTimeout(()=>{board.style.transition="box-shadow 1s";board.style.boxShadow="0 0 0 1px rgba(200,169,110,.2), 0 30px 80px rgba(0,0,0,.7)";},3000);
+}
+window.autoSolvePuzzle=function(){
+  if(autoSolving)return;autoSolving=true;document.getElementById("btnSolve").style.opacity="0.4";
+  const remaining=pieces.filter(p=>!p.snapped);remaining.sort(()=>Math.random()-0.5);
+  remaining.forEach((p,i)=>{
+    setTimeout(()=>{
+      p.el.style.transition="left 0.6s cubic-bezier(0.34,1.56,0.64,1),top 0.6s cubic-bezier(0.34,1.56,0.64,1),transform 0.5s ease";
+      p.el.style.left=p.targetX+"px";p.el.style.top=p.targetY+"px";p.el.style.transform="rotate(0deg)";
+      setTimeout(()=>{snapPiece(p);autoSolving=i===remaining.length-1?false:autoSolving;},650);
+    },i*80);
+  });
+};
+window.resetPuzzle=function(){
+  autoSolving=false;document.getElementById("btnSolve").style.opacity="1";
+  document.getElementById("btnSolve").style.display="";
+  pieces.forEach(p=>{p.el.style.transition="none";});setTimeout(scatterPieces,50);
+};
+window.initPuzzle=function(){if(puzzleReady)resetPuzzle();};
+function snapSound(){try{const ac=new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator();const g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.setValueAtTime(880,ac.currentTime);o.frequency.exponentialRampToValueAtTime(1200,ac.currentTime+0.08);g.gain.setValueAtTime(0.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.15);o.start();o.stop(ac.currentTime+0.15);setTimeout(()=>ac.close(),300);}catch(e){}}
+})();
+
+const questions=[
+  {text:"Qual é a nossa data de namoro?",opts:[{i:"📅",t:"14 de fevereiro de 2026",ok:true},{i:"📅",t:"12 de janeiro de 2026",ok:false},{i:"📅",t:"20 de março de 2025",ok:false},{i:"📅",t:"01 de dezembro de 2025",ok:false}],fb:"Isso mesmo! 14 de fevereiro de 2026 — o dia em que tudo começou. 💗"},
+  {text:"O que mais amo em você?",opts:[{i:"💗",t:"Quando demonstra todo o seu amor por mim",ok:true},{i:"🎵",t:"Quando canta baixinho sem perceber",ok:false},{i:"📚",t:"Quando me indica séries para assistir",ok:false},{i:"☕",t:"Quando prepara café de manhã",ok:false}],fb:"Sim! Quando você demonstra todo o seu amor por mim, o mundo inteiro para. 🌸"},
+  {text:"Qual é o momento da semana que mais gosto nosso?",opts:[{i:"🤗",t:"Todos, quando ficamos abraçados juntos com muito amor",ok:true},{i:"🎬",t:"Quando assistimos filmes juntos",ok:false},{i:"🍕",t:"Quando saímos para comer",ok:false},{i:"📱",t:"Quando ficamos conversando por horas",ok:false}],fb:"Todos os momentos abraçados juntos são os melhores da semana. 💕"},
+  {text:"O que sinto mais falta quando você não faz?",opts:[{i:"💌",t:"Quando não me chama de amor e não demonstra todo o seu amor por mim",ok:true},{i:"😊",t:"Quando não manda bom dia",ok:false},{i:"📞",t:"Quando não liga à noite",ok:false},{i:"🌹",t:"Quando não manda flores",ok:false}],fb:"Quando você me chama de amor e demonstra seu carinho, meu dia inteiro muda. 🌹"},
+  {text:"Qual é o nosso combinado que nunca vamos esquecer?",opts:[{i:"💍",t:"O combinado que fizemos de nos casar, apesar de tudo",ok:true},{i:"✈️",t:"Viajar juntos para o exterior",ok:false},{i:"🏠",t:"Morar juntos em breve",ok:false},{i:"🐾",t:"Adotar um pet juntos",ok:false}],fb:"Nosso combinado de nos casar, apesar de tudo — esse eu nunca vou esquecer. 💍💗"},
+];
+let curQ=0,score=0,answered=false;
+function startGame(){curQ=0;score=0;answered=false;document.getElementById("qCard").style.display="block";document.getElementById("gameResult").style.display="none";buildProg();showQ();}
+function buildProg(){const bar=document.getElementById("progressRow");bar.innerHTML="";questions.forEach((_,i)=>{const d=document.createElement("div");d.className="pdot";d.id="pd"+i;bar.appendChild(d);});}
+function showQ(){answered=false;const q=questions[curQ];document.getElementById("qNum").textContent=`Pergunta ${curQ+1} de ${questions.length}`;document.getElementById("qText").textContent=q.text;const opts=document.getElementById("qOpts");opts.innerHTML="";q.opts.forEach((o,i)=>{const btn=document.createElement("div");btn.className="q-opt";btn.innerHTML=`<span class="q-opt-icon">${o.i}</span><span>${o.t}</span>`;btn.onclick=()=>answer(o.ok,i,q);opts.appendChild(btn);});const fb=document.getElementById("qFb");fb.textContent="";fb.classList.remove("show");}
+function answer(ok,idx,q){if(answered)return;answered=true;const opts=document.querySelectorAll(".q-opt");opts[idx].classList.add(ok?"correct":"wrong");if(!ok)questions[curQ].opts.forEach((o,i)=>{if(o.ok)opts[i].classList.add("reveal");});else score++;const fb=document.getElementById("qFb");fb.textContent=q.fb;fb.classList.add("show");document.getElementById("pd"+curQ)?.classList.add("done");setTimeout(()=>{curQ++;if(curQ<questions.length)showQ();else showResult();},2500);}
+function showResult(){document.getElementById("qCard").style.display="none";const res=document.getElementById("gameResult");res.style.display="flex";const pct=score/questions.length;let emoji,title,msg;if(pct===1){emoji="💕";title="Você me conhece de cor!";msg="Você acertou tudo! Espero que tenha acertado tudo, meu amor — se não, o clima aqui entre nós vai ficar pesado! 😏🌹";launchConfetti();}else if(pct>=.6){emoji="🌸";title="Quase perfeita!";msg="Espero que tenha acertado tudo, meu amor — se não, já deve ter acabado o clima aí entre nós e a coisa vai ficar feia! 😤💗";}else{emoji="💌";title="Hmm… a gente precisa conversar!";msg="Espero que tenha acertado tudo, meu amor — porque se não acertou, já deve ter acabado o clima aí entre nós e a coisa vai ficar feia mesmo! 🌷";}
+document.getElementById("resEmoji").textContent=emoji;document.getElementById("resTitle").textContent=title;document.getElementById("resMsg").textContent=msg;document.getElementById("resScore").textContent=`${score} de ${questions.length} acertos ✦`;}
+startGame();
+
+function launchConfetti(){
+  const cv=document.getElementById("confetti-canvas");cv.style.display="block";cv.width=innerWidth;cv.height=innerHeight;
+  const ctx=cv.getContext("2d");
+  const cols=["#c8a96e","#d4a5a5","#f0d4d4","#7a2d3a","#e8c8c8","#fce8e8","#a8435e","#ffd5df"];
+  const shapes=["♡","✦","·","❤","♥"];
+  const pieces=Array.from({length:160},()=>({x:Math.random()*cv.width,y:-20-Math.random()*200,vx:(Math.random()-.5)*5,vy:Math.random()*4+2,r:Math.random()*7+3,col:cols[Math.floor(Math.random()*cols.length)],rot:Math.random()*360,rv:(Math.random()-.5)*7,shape:shapes[Math.floor(Math.random()*shapes.length)]}));
+  let frame=0;
+  (function draw(){ctx.clearRect(0,0,cv.width,cv.height);pieces.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.rot+=p.rv;p.vy+=.07;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.col;ctx.font=`${p.r*2}px serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(p.shape,0,0);ctx.restore();});frame++;if(frame<260)requestAnimationFrame(draw);else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display="none";}})();
+}
+
+let pwVal="";
+function pwPress(d){if(pwVal.length>=8)return;pwVal+=d;updateDots();}
+function pwDel(){pwVal=pwVal.slice(0,-1);updateDots();document.getElementById("pwErr").classList.remove("show");}
+function updateDots(){for(let i=0;i<8;i++){const d=document.getElementById("d"+i);if(d)d.classList.toggle("on",i<pwVal.length);}}
+function pwCheck(){if(pwVal.length<8){shakeBox();showPwErr("A data está incompleta… 🌸");return;}if(pwVal===CFG.senha){pwSuccess();}else{pwVal="";updateDots();shakeBox();showPwErr("Hmm… tente de novo, meu amor 🥺");}}
+function shakeBox(){const b=document.getElementById("pwBox");b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");setTimeout(()=>b.classList.remove("shake"),500);}
+function showPwErr(msg){const e=document.getElementById("pwErr");e.textContent=msg;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),3000);}
+function pwSuccess(){paperSound();miniConfetti();const box=document.getElementById("pwBox");box.style.transition="all .8s ease";box.style.opacity="0";box.style.transform="scale(.88) translateY(10px)";setTimeout(()=>{box.style.display="none";const env=document.getElementById("envWrap");env.style.display="flex";env.style.opacity="0";env.style.transition="opacity 1s ease";setTimeout(()=>env.style.opacity="1",60);},820);}
+function miniConfetti(){
+  const cv=document.getElementById("confetti-canvas");cv.style.display="block";cv.width=innerWidth;cv.height=innerHeight;
+  const ctx=cv.getContext("2d");
+  const els=Array.from({length:30},()=>({x:innerWidth*.3+Math.random()*innerWidth*.4,y:innerHeight*.55,vx:(Math.random()-.5)*5,vy:-(Math.random()*9+3),icon:"❤",a:1,size:16+Math.random()*14}));
+  let f=0;
+  (function draw(){ctx.clearRect(0,0,cv.width,cv.height);els.forEach(e=>{e.y+=e.vy;e.vy+=.28;e.x+=e.vx;e.a-=.014;if(e.a<=0)return;ctx.globalAlpha=Math.max(0,e.a);ctx.font=`${e.size}px serif`;ctx.textAlign="center";ctx.fillText(e.icon,e.x,e.y);});ctx.globalAlpha=1;f++;if(f<110)requestAnimationFrame(draw);else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display="none";}})();
+}
+
+let qrGenerated=false;
+function openLetter(){paperSound();document.getElementById("letter-modal").classList.add("open");document.body.style.overflow="hidden";if(!qrGenerated){generateQR();qrGenerated=true;}}
+function closeLetter(){document.getElementById("letter-modal").classList.remove("open");document.body.style.overflow="";}
+document.getElementById("letter-modal").addEventListener("click",e=>{if(e.target===document.getElementById("letter-modal"))closeLetter();});
+function generateQR(){const el=document.getElementById("qrcode");if(el.querySelector("canvas,img"))return;new QRCode(el,{text:CFG.videoUrl,width:180,height:180,colorDark:"#7a2d3a",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});}
+function paperSound(){try{const ac=new(window.AudioContext||window.webkitAudioContext)();const buf=ac.createBuffer(1,ac.sampleRate*.4,ac.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.max(0,1-i/d.length)*.09;const src=ac.createBufferSource();src.buffer=buf;const f=ac.createBiquadFilter();f.type="bandpass";f.frequency.value=2600;f.Q.value=.38;src.connect(f);f.connect(ac.destination);src.start();setTimeout(()=>ac.close(),600);}catch(e){}}
+
+function updateCounter(){const diff=new Date()-CFG.inicio;if(diff<0)return;document.getElementById("cD").textContent=Math.floor(diff/86400000);document.getElementById("cH").textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,"0");document.getElementById("cM").textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,"0");document.getElementById("cS").textContent=String(Math.floor((diff%60000)/1000)).padStart(2,"0");}
+updateCounter();setInterval(updateCounter,1000);
+
+let isPlaying=false;
+function toggleMusic(){const disc=document.getElementById("vinylDisc");const audio=document.getElementById("bgMusic");const lbl=document.getElementById("vinylLbl");if(isPlaying){audio.pause();disc.classList.remove("spin");lbl.textContent="▶ música";isPlaying=false;}else{try{new(window.AudioContext||window.webkitAudioContext)().resume();}catch(e){}audio.play().catch(()=>{});disc.classList.add("spin");lbl.textContent="❚❚ tocando";isPlaying=true;}}
+</script>
+</body>
+</html>
